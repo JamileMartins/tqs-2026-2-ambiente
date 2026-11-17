@@ -10,7 +10,8 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.debugpy",
-        "ms-playwright.playwright"
+        "ms-playwright.playwright",
+        "searKing.preview-vscode"
       ],
       "settings": {
         "python.testing.pytestEnabled": true,
