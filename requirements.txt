@@ -1,0 +1,10 @@
+# Ferramentas da disciplina Teste e Qualidade de Software - IFCE Campus Caninde
+# Instaladas automaticamente quando o Codespace e criado.
+#
+# As ferramentas proprias da disciplina - mutantes.py, rodar.py - usam apenas a
+# biblioteca padrao e nao aparecem aqui.
+
+pytest==8.3.4
+coverage==7.6.10
+playwright==1.49.1
+httpx==0.28.1

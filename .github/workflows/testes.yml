@@ -1,0 +1,38 @@
+name: Testes
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter o codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar as ferramentas
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Ferramentas da disciplina
+        run: |
+          python rodar.py test_reserva.py
+          python mutantes.py solicitacao.py test_solicitacao_exemplo.py
+        continue-on-error: true
+
+      - name: Teste de interface
+        run: pytest tests_ui -v
+
+      - name: Resumo
+        run: echo "Verificacao concluida."

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Agendamento de Laboratorios - IFCE Caninde</title>
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:40px auto;color:#3D2B1F}
+ h1{color:#003F8A;font-size:20px}
+ label{display:block;margin:14px 0 4px;font-weight:bold}
+ input,select{padding:6px;width:260px;font-size:14px}
+ button{margin-top:18px;padding:8px 18px;font-size:14px}
+ #resultado{margin-top:20px;padding:12px;border-left:4px solid #ccc}
+ .ok{border-color:#2E7528;color:#2E7528}
+ .erro{border-color:#CC0000;color:#CC0000}
+</style>
+</head>
+<body>
+<h1>Solicitacao de reserva de laboratorio</h1>
+
+<label for="duracao">Duracao (horas-aula)</label>
+<input id="duracao" type="number" value="2">
+
+<label for="antecedencia">Antecedencia (horas)</label>
+<input id="antecedencia" type="number" value="48">
+
+<label for="laboratorio">Laboratorio</label>
+<input id="laboratorio" type="text" value="Lab 1">
+
+<button id="enviar">Solicitar reserva</button>
+
+<div id="resultado">Preencha e clique em solicitar.</div>
+
+<script>
+// Regras: R13 duracao de 1 a 4 horas-aula; R14 antecedencia de 24 h a 60 dias;
+// R19 laboratorio obrigatorio.
+function validar(duracao, antecedencia, laboratorio) {
+  var erros = [];
+  if (duracao < 1) { erros.push("duracao_minima"); }
+  if (duracao > 4) { erros.push("duracao_maxima"); }
+  if (!Number.isInteger(duracao)) { erros.push("duracao_nao_inteira"); }
+  if (antecedencia < 24) { erros.push("antecedencia"); }
+  if (!laboratorio) { erros.push("laboratorio"); }
+  return erros;
+}
+
+document.getElementById("enviar").addEventListener("click", function () {
+  var duracao = Number(document.getElementById("duracao").value);
+  var antecedencia = Number(document.getElementById("antecedencia").value);
+  var laboratorio = document.getElementById("laboratorio").value.trim();
+  var erros = validar(duracao, antecedencia, laboratorio);
+  var div = document.getElementById("resultado");
+  if (erros.length === 0) {
+    div.textContent = "Reserva solicitada com sucesso.";
+    div.className = "ok";
+  } else {
+    div.textContent = "Solicitacao recusada: " + erros.join(", ");
+    div.className = "erro";
+  }
+});
+</script>
+</body>
+</html>
