@@ -12,6 +12,7 @@ Uso:
     python mutantes.py --mostrar 7          mostra a alteracao do mutante 7
 """
 import ast
+import inspect
 import sys
 import types
 
@@ -116,6 +117,17 @@ def aplicar(fonte, indice_alvo):
     return ast.unparse(arvore), ponto
 
 
+def _pede_parametro(funcao):
+    """Diz se a funcao exige argumentos - caso tipico de pytest.mark.parametrize."""
+    try:
+        parametros = inspect.signature(funcao).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(p.default is inspect.Parameter.empty
+               and p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+               for p in parametros)
+
+
 def carregar_modulo(nome, fonte):
     modulo = types.ModuleType(nome)
     modulo.__file__ = nome + ".py"
@@ -146,6 +158,14 @@ def rodar_suite(nome_alvo, fonte_alvo, suites, detalhar=False):
                 funcao = getattr(modulo, atributo)
                 if not callable(funcao):
                     continue
+                if _pede_parametro(funcao):
+                    motivo = (
+                        "a funcao %s, de %s, recebe parametros.\n"
+                        "   As ferramentas da disciplina executam funcoes de teste SEM\n"
+                        "   parametros. Se o codigo veio de uma IA, ela provavelmente usou\n"
+                        "   @pytest.mark.parametrize: peca um teste por caso, sem pytest."
+                        % (atributo, caminho))
+                    return (False, motivo) if detalhar else False
                 try:
                     funcao()
                 except Exception as erro:
